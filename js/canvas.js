@@ -82,6 +82,7 @@
   // Slide in panel
   setTimeout(function () {
     palettePanel.classList.add('visible');
+    SFX.panelSlideIn();
   }, 50);
 
   // Auto-select first color
@@ -154,6 +155,7 @@
       if (sw) sw.classList.toggle('swatch--selected', isSelected);
     }
     highlightCells();
+    SFX.selectColor();
   }
 
   function highlightCells() {
@@ -187,6 +189,7 @@
     } else if (cellKey !== lastWrongKey) {
       lastWrongKey = cellKey;
       showWrongFeedback(el);
+      SFX.wrongCell();
     }
   }
 
@@ -196,6 +199,7 @@
     el.style.backgroundColor = palette[correctIdx];
     el.classList.add('cell--filled');
     el.classList.remove('cell--highlighted');
+    SFX.fillCell();
 
     filledCount++;
     updateProgress();
@@ -234,6 +238,7 @@
     if (swatch) {
       swatch.classList.add('swatch--done');
     }
+    SFX.colorComplete();
     // Auto-advance to next unfinished color
     autoAdvanceColor(paletteIdx);
   }
@@ -252,6 +257,7 @@
 
   function onComplete() {
     isComplete = true;
+    SFX.sheetComplete();
     // Step 1: slide out panel
     palettePanel.classList.remove('visible');
     // Step 2: reveal artwork after panel exits
