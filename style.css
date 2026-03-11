@@ -25,7 +25,7 @@ body {
   touch-action: manipulation;
 }
 
-/* === Home Screen (landscape-first, fits in viewport) === */
+/* === Home Screen (landscape-first) === */
 #home-screen {
   display: flex;
   flex-direction: column;
@@ -33,7 +33,7 @@ body {
   justify-content: center;
   height: 100%;
   height: 100dvh;
-  padding: 8px 24px;
+  padding: 8px 0;
   padding-top: env(safe-area-inset-top, 8px);
   overflow: hidden;
 }
@@ -51,10 +51,21 @@ body {
 .sheet-grid {
   display: flex;
   gap: 16px;
-  justify-content: center;
-  align-items: stretch;
+  align-items: center;
   flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  padding: 0 24px;
   max-width: 100%;
+  /* Hide scrollbar but allow scrolling */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.sheet-grid::-webkit-scrollbar {
+  display: none;
 }
 
 .sheet-card {
@@ -68,6 +79,7 @@ body {
   flex-direction: column;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   flex-shrink: 0;
+  scroll-snap-align: center;
 }
 
 .sheet-card:active {
@@ -75,7 +87,7 @@ body {
 }
 
 .sheet-card-thumb {
-  /* Square thumb that drives the card width */
+  /* Square thumb sized from viewport height */
   width: calc(100dvh - 90px);
   max-width: 220px;
   aspect-ratio: 1 / 1;
@@ -189,8 +201,8 @@ body {
 
 #grid-container {
   position: relative;
-  /* ~94% of viewport height like Figma, centered between back btn area and panel */
-  height: min(calc(100dvh - 40px), calc(100vw - 112px - 76px - 24px));
+  /* Fit within viewport with breathing room on all sides */
+  height: min(calc(100dvh - 48px), calc(100vw - 112px - 76px - 24px));
   aspect-ratio: 1 / 1;
   max-width: 100%;
   max-height: 100%;
@@ -380,7 +392,7 @@ body {
   }
 
   #grid-container {
-    height: min(calc(100dvh - 40px), calc(100vw - 80px - 56px - 24px));
+    height: min(calc(100dvh - 48px), calc(100vw - 80px - 56px - 24px));
   }
 
   #back-btn {
