@@ -25,9 +25,7 @@
     for (var r = 0; r < data.gridSize; r++) {
       for (var c = 0; c < data.gridSize; c++) {
         var px = document.createElement('div');
-        var rgb = hexToRgb(data.palette[data.colorGrid[r][c]]);
-        var gray = Math.round(0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b);
-        px.style.backgroundColor = 'rgb(' + gray + ',' + gray + ',' + gray + ')';
+        px.style.backgroundColor = data.palette[data.colorGrid[r][c]];
         thumbGrid.appendChild(px);
       }
     }
