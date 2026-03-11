@@ -15,11 +15,23 @@
     card.className = 'sheet-card';
     card.dataset.sheet = id;
 
+    // Render pixel art thumbnail from colorGrid data
     var thumb = document.createElement('div');
     thumb.className = 'sheet-card-thumb';
-    thumb.style.backgroundImage = 'url(sheets/sheet' + id + '/artwork.png)';
-    thumb.style.backgroundSize = 'cover';
-    thumb.style.backgroundPosition = 'center';
+    var thumbGrid = document.createElement('div');
+    thumbGrid.className = 'thumb-grid';
+    thumbGrid.style.gridTemplateColumns = 'repeat(' + data.gridSize + ', 1fr)';
+    thumbGrid.style.gridTemplateRows = 'repeat(' + data.gridSize + ', 1fr)';
+    for (var r = 0; r < data.gridSize; r++) {
+      for (var c = 0; c < data.gridSize; c++) {
+        var px = document.createElement('div');
+        var rgb = hexToRgb(data.palette[data.colorGrid[r][c]]);
+        var gray = Math.round(0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b);
+        px.style.backgroundColor = 'rgb(' + gray + ',' + gray + ',' + gray + ')';
+        thumbGrid.appendChild(px);
+      }
+    }
+    thumb.appendChild(thumbGrid);
 
     var titleEl = document.createElement('div');
     titleEl.className = 'sheet-card-title';

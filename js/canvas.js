@@ -68,22 +68,20 @@
 
   // Build palette
   for (var i = 0; i < palette.length; i++) {
-    var swatchWrap = document.createElement('div');
-    swatchWrap.style.display = 'flex';
-    swatchWrap.style.flexDirection = 'column';
-    swatchWrap.style.alignItems = 'center';
-    swatchWrap.style.gap = '4px';
+    var slot = document.createElement('div');
+    slot.className = 'swatch-slot' + (i === 0 ? ' swatch-slot--selected' : '');
+    slot.dataset.idx = i;
 
     var swatch = document.createElement('div');
-    swatch.className = 'swatch';
+    swatch.className = 'swatch' + (i === 0 ? ' swatch--selected' : '');
     swatch.dataset.idx = i;
     swatch.style.backgroundColor = palette[i];
     swatch.addEventListener('click', (function (idx) {
       return function () { selectColor(idx); };
     })(i));
 
-    swatchWrap.appendChild(swatch);
-    palettePanel.appendChild(swatchWrap);
+    slot.appendChild(swatch);
+    palettePanel.appendChild(slot);
   }
 
   // Slide in panel
@@ -153,10 +151,12 @@
 
   function selectColor(idx) {
     selectedColor = idx;
-    var swatches = document.querySelectorAll('.swatch');
-    for (var s = 0; s < swatches.length; s++) {
-      var isSelected = parseInt(swatches[s].dataset.idx) === idx;
-      swatches[s].classList.toggle('swatch--selected', isSelected);
+    var slots = document.querySelectorAll('.swatch-slot');
+    for (var s = 0; s < slots.length; s++) {
+      var isSelected = parseInt(slots[s].dataset.idx) === idx;
+      slots[s].classList.toggle('swatch-slot--selected', isSelected);
+      var sw = slots[s].querySelector('.swatch');
+      if (sw) sw.classList.toggle('swatch--selected', isSelected);
     }
     highlightCells();
   }
