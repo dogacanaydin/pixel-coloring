@@ -67,9 +67,6 @@ body {
   display: flex;
   flex-direction: column;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  /* Height-based: cards fit within landscape viewport */
-  height: calc(100dvh - 60px);
-  max-height: 300px;
   flex-shrink: 0;
 }
 
@@ -78,12 +75,9 @@ body {
 }
 
 .sheet-card-thumb {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
+  /* Square thumb that drives the card width */
+  width: calc(100dvh - 90px);
+  max-width: 220px;
   aspect-ratio: 1 / 1;
 }
 
@@ -347,8 +341,9 @@ body {
 
 /* === Phone === */
 @media (max-width: 767px) {
-  .sheet-card {
-    max-height: 240px;
+  .sheet-card-thumb {
+    width: calc(100dvh - 80px);
+    max-width: 160px;
   }
 
   .sheet-grid {
@@ -415,7 +410,11 @@ body {
 
   .sheet-card {
     border-radius: 20px;
-    max-height: 360px;
+  }
+
+  .sheet-card-thumb {
+    width: calc(100dvh - 100px);
+    max-width: 260px;
   }
 
   .sheet-card-title {
