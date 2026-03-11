@@ -38,8 +38,8 @@
   var pixelGrid = document.getElementById('pixel-grid');
   var palettePanel = document.getElementById('palette-panel');
 
-  // Set grayscale background
-  gridBg.style.backgroundImage = 'url(sheets/sheet' + sheetId + '/artwork.png)';
+  // Grayscale background no longer needed — each cell computes its own grayscale color
+  // gridBg.style.backgroundImage = 'url(sheets/sheet' + sheetId + '/artwork.png)';
 
   // Build grid
   pixelGrid.style.gridTemplateColumns = 'repeat(' + gridSize + ', 1fr)';
