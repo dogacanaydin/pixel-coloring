@@ -1,0 +1,10 @@
+{
+  "name": "Pixel Coloring",
+  "short_name": "Pixel Art",
+  "start_url": "./index.html",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#B8DEF5",
+  "theme_color": "#B8DEF5",
+  "icons": []
+}
