@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pixel Coloring — Setup</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #1a1a2e;
+      color: #eee;
+      padding: 24px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 { margin-bottom: 8px; font-size: 24px; }
+    p.subtitle { color: #999; margin-bottom: 24px; font-size: 14px; }
+    label { display: block; font-weight: 600; margin: 16px 0 6px; font-size: 14px; }
+    input[type="file"], input[type="number"], input[type="text"] {
+      background: #2a2a4a;
+      border: 1px solid #444;
+      color: #eee;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 16px;
+      width: 100%;
+    }
+    textarea {
+      background: #2a2a4a;
+      border: 1px solid #444;
+      color: #eee;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: monospace;
+      width: 100%;
+      resize: vertical;
+    }
+    #palette-input { height: 160px; }
+    #output { height: 300px; margin-top: 8px; }
+    .row { display: flex; gap: 12px; }
+    .row > * { flex: 1; }
+    button {
+      background: #4a4ae0;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 16px;
+    }
+    button:disabled { opacity: 0.4; cursor: default; }
+    button:hover:not(:disabled) { background: #5a5af0; }
+    canvas { max-width: 300px; margin: 16px 0; display: none; border-radius: 8px; }
+    #preview-grid { border-radius: 8px; overflow: hidden; }
+    .btn-row { display: flex; gap: 12px; }
+  </style>
+</head>
+<body>
+  <h1>Setup — Generate Sheet Data</h1>
+  <p class="subtitle">Pick a reference PNG and palette to generate data.js for a coloring sheet.</p>
+
+  <label for="file-input">Reference PNG (fully colored artwork)</label>
+  <input type="file" id="file-input" accept="image/png,image/jpeg">
+  <canvas id="preview-canvas"></canvas>
+
+  <div class="row">
+    <div>
+      <label for="sheet-num">Sheet Number (1–5)</label>
+      <input type="number" id="sheet-num" value="1" min="1" max="5">
+    </div>
+    <div>
+      <label for="grid-size">Grid Size</label>
+      <input type="number" id="grid-size" value="12" min="4" max="32">
+    </div>
+  </div>
+
+  <label for="sheet-title">Sheet Title</label>
+  <input type="text" id="sheet-title" placeholder="e.g. Forest Fox">
+
+  <label for="palette-input">Palette (one hex color per line, top → bottom order)</label>
+  <textarea id="palette-input" placeholder="#F5F0E8
+#2D5A27
+#8B4513
+#FFD700
+#FF6347
+#4169E1">#F5F0E8
+#2D5A27
+#8B4513
+#FFD700
+#FF6347
+#4169E1</textarea>
+
+  <div class="btn-row">
+    <button id="generate-btn" disabled>Generate data.js</button>
+    <button id="copy-btn" disabled>Copy to Clipboard</button>
+  </div>
+
+  <div id="preview-grid"></div>
+
+  <label>Output (paste into sheets/sheetN/data.js)</label>
+  <textarea id="output" readonly></textarea>
+
+  <script src="js/utils.js"></script>
+  <script src="js/setup.js"></script>
+</body>
+</html>

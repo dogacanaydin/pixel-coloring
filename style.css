@@ -1,0 +1,406 @@
+/* style.css — Pixel Art Coloring Webapp */
+
+/* === Reset & iOS Fixes === */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Rounded', sans-serif;
+  background: #B8DEF5;
+  color: #333;
+  touch-action: manipulation;
+}
+
+/* === Dynamic viewport height fallback === */
+:root {
+  --dvh: 1dvh;
+}
+
+/* === Home Screen === */
+#home-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  height: 100dvh;
+  padding: 16px;
+  padding-top: env(safe-area-inset-top, 16px);
+}
+
+.home-title {
+  font-size: 28px;
+  font-weight: 800;
+  text-align: center;
+  margin: 16px 0 24px;
+  letter-spacing: -0.5px;
+  color: #2a5298;
+}
+
+.sheet-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 16px;
+}
+
+.sheet-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+
+.sheet-card:active {
+  transform: scale(0.96);
+}
+
+.sheet-card-thumb {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  filter: grayscale(1);
+  background: #e8eff5;
+}
+
+.sheet-card-title {
+  padding: 10px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  color: #2a5298;
+}
+
+/* Fullscreen banner */
+.fullscreen-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(42, 82, 152, 0.95);
+  color: white;
+  text-align: center;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 100;
+  transition: transform 0.3s ease;
+}
+
+.fullscreen-banner.hidden {
+  transform: translateY(100%);
+}
+
+/* === Coloring Screen === */
+#coloring-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  height: 100dvh;
+  background: #B8DEF5;
+}
+
+/* Top bar */
+#top-bar {
+  display: flex;
+  align-items: center;
+  height: 56px;
+  padding: 0 12px;
+  background: transparent;
+  flex-shrink: 0;
+  gap: 12px;
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+#back-btn {
+  width: 44px;
+  height: 44px;
+  background: #fff;
+  border: none;
+  color: #555;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  flex-shrink: 0;
+}
+
+#back-btn:active {
+  transform: scale(0.92);
+  background: #f0f0f0;
+}
+
+#sheet-title {
+  flex: 1;
+  font-size: 17px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #2a5298;
+}
+
+#progress-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(42, 82, 152, 0.6);
+  white-space: nowrap;
+}
+
+/* Coloring area: grid + panel */
+#coloring-area {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* Grid wrapper */
+#grid-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  position: relative;
+}
+
+#grid-container {
+  position: relative;
+  width: min(
+    calc(100vw - 100px - 16px),
+    calc(100dvh - 64px - 16px)
+  );
+  aspect-ratio: 1 / 1;
+  max-width: 100%;
+  max-height: 100%;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  overflow: hidden;
+  padding: 6px;
+}
+
+/* Grayscale background artwork */
+#grid-bg {
+  position: absolute;
+  inset: 6px;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  filter: grayscale(1);
+  border-radius: 6px;
+  transition: opacity 600ms ease;
+}
+
+#grid-bg.bg--hidden {
+  opacity: 0;
+}
+
+/* Pixel grid */
+#pixel-grid {
+  position: absolute;
+  inset: 6px;
+  display: grid;
+  touch-action: none;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.grid-cell {
+  /* background-color set via inline style (grayscale of correct color) */
+  border: 1px solid rgba(0,0,0,0.04);
+  touch-action: none;
+  transition: background-color 0.15s ease;
+}
+
+/* Filled cell: reveals color */
+.grid-cell.cell--filled {
+  /* background-color set via inline style */
+  border-color: rgba(0,0,0,0.06);
+}
+
+/* Highlighted cell: matching selected color */
+.grid-cell.cell--highlighted {
+  outline: 2px solid #FFD700;
+  outline-offset: -2px;
+  animation: highlight-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes highlight-pulse {
+  0%, 100% { outline-color: #FFD700; }
+  50%      { outline-color: #FFF176; }
+}
+
+/* Wrong color shake */
+.grid-cell.cell--wrong {
+  animation: wrong-shake 0.5s ease forwards;
+}
+
+@keyframes wrong-shake {
+  0%   { transform: translateX(0);    outline: 2px solid rgba(255,80,80,0.8); outline-offset: -2px; }
+  25%  { transform: translateX(-4px); }
+  75%  { transform: translateX(4px);  }
+  100% { transform: translateX(0);    outline: 2px solid transparent; outline-offset: -2px; }
+}
+
+/* Completion: cells merge into artwork */
+#pixel-grid.grid--complete {
+  transform: scale(1.02);
+  transition: transform 600ms ease;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+}
+
+#pixel-grid.grid--complete .grid-cell {
+  border-color: transparent;
+  transition: border-color 600ms ease;
+}
+
+/* === Color Panel === */
+#palette-panel {
+  width: 80px;
+  height: 100%;
+  background: #F5C842;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 10px;
+  transform: translateX(100%);
+  transition: transform 400ms ease-out;
+  flex-shrink: 0;
+  overflow-y: auto;
+  border-radius: 20px 0 0 20px;
+}
+
+#palette-panel.visible {
+  transform: translateX(0);
+}
+
+.swatch {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  border: 4px solid #fff;
+  cursor: pointer;
+  touch-action: manipulation;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.swatch:active {
+  transform: scale(0.9);
+}
+
+.swatch--selected {
+  transform: scale(1.12);
+  box-shadow: 0 3px 12px rgba(0,0,0,0.2);
+  border-color: #fff;
+}
+
+.swatch--selected:active {
+  transform: scale(1.05);
+}
+
+.swatch--done {
+  opacity: 0.35;
+}
+
+.swatch-label {
+  font-size: 10px;
+  color: rgba(100,70,0,0.6);
+  text-align: center;
+  margin-top: -4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80px;
+}
+
+/* === iPad styles === */
+@media (min-width: 768px) {
+  #palette-panel {
+    width: 110px;
+    gap: 14px;
+    padding: 20px 14px;
+    border-radius: 24px 0 0 24px;
+  }
+
+  .swatch {
+    width: 68px;
+    height: 68px;
+    border-radius: 18px;
+    border-width: 5px;
+  }
+
+  .swatch-label {
+    font-size: 12px;
+  }
+
+  #grid-container {
+    width: min(
+      calc(100vw - 130px - 16px),
+      calc(100dvh - 64px - 16px)
+    );
+  }
+
+  .home-title {
+    font-size: 36px;
+    margin: 24px 0 32px;
+  }
+
+  .sheet-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .sheet-card-title {
+    font-size: 16px;
+    padding: 12px 16px;
+  }
+}
+
+/* === Landscape phone === */
+@media (max-height: 500px) and (orientation: landscape) {
+  #top-bar {
+    height: 40px;
+  }
+
+  #palette-panel {
+    gap: 6px;
+    padding: 8px 6px;
+    width: 70px;
+  }
+
+  .swatch {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+}
