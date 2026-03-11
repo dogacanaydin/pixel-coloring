@@ -121,26 +121,18 @@ body {
 
 /* === Coloring Screen === */
 #coloring-screen {
-  display: flex;
-  flex-direction: column;
+  position: relative;
   height: 100%;
   height: 100dvh;
   background: #B8DEF5;
 }
 
-/* Top bar */
-#top-bar {
-  display: flex;
-  align-items: center;
-  height: 56px;
-  padding: 0 16px;
-  background: transparent;
-  flex-shrink: 0;
-  gap: 12px;
-  padding-top: env(safe-area-inset-top, 0px);
-}
-
+/* Floating back button — top-left, overlaid */
 #back-btn {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 10;
   width: 48px;
   height: 48px;
   background: #fff;
@@ -155,7 +147,7 @@ body {
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-  flex-shrink: 0;
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 #back-btn:active {
@@ -163,46 +155,42 @@ body {
   background: #f0f0f0;
 }
 
-#sheet-title {
-  flex: 1;
-  font-size: 17px;
-  font-weight: 700;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: #2a5298;
-}
-
+/* Floating progress — top-right, overlaid */
 #progress-text {
+  position: absolute;
+  top: 20px;
+  right: 128px;
+  z-index: 10;
   font-size: 14px;
   font-weight: 600;
   color: rgba(42, 82, 152, 0.6);
   white-space: nowrap;
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
-/* Coloring area: grid + panel side by side */
+/* Coloring area: full viewport, grid + panel */
 #coloring-area {
-  flex: 1;
   display: flex;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
-  min-height: 0;
 }
 
-/* Grid wrapper — centers the grid in available space */
+/* Grid wrapper — centers the grid in space left of panel */
 #grid-wrapper {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 12px;
+  padding: 20px 12px;
   min-width: 0;
   min-height: 0;
 }
 
 #grid-container {
   position: relative;
-  /* Height-constrained: fit within available vertical space */
-  height: min(calc(100dvh - 56px - 24px), calc(100vw - 112px - 24px));
+  /* ~94% of viewport height like Figma (600/640), minus padding */
+  height: min(calc(100dvh - 40px), calc(100vw - 112px - 24px));
   aspect-ratio: 1 / 1;
   max-width: 100%;
   max-height: 100%;
@@ -383,13 +371,20 @@ body {
   }
 
   #grid-container {
-    height: min(calc(100dvh - 56px - 24px), calc(100vw - 80px - 24px));
+    height: min(calc(100dvh - 40px), calc(100vw - 80px - 24px));
   }
 
   #back-btn {
     width: 40px;
     height: 40px;
     font-size: 20px;
+    top: 12px;
+    left: 12px;
+  }
+
+  #progress-text {
+    right: 92px;
+    top: 16px;
   }
 }
 
@@ -410,9 +405,17 @@ body {
   }
 
   #back-btn {
-    width: 56px;
-    height: 56px;
+    width: 60px;
+    height: 60px;
     font-size: 28px;
+    top: 16px;
+    left: 24px;
+  }
+
+  #progress-text {
+    right: 136px;
+    top: 28px;
+    font-size: 16px;
   }
 }
 

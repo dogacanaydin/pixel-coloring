@@ -31,17 +31,12 @@
   }
 
   // DOM refs
-  var topBar = document.getElementById('top-bar');
   var backBtn = document.getElementById('back-btn');
-  var titleEl = document.getElementById('sheet-title');
   var progressEl = document.getElementById('progress-text');
   var gridContainer = document.getElementById('grid-container');
   var gridBg = document.getElementById('grid-bg');
   var pixelGrid = document.getElementById('pixel-grid');
   var palettePanel = document.getElementById('palette-panel');
-
-  // Set title
-  titleEl.textContent = title;
 
   // Set grayscale background
   gridBg.style.backgroundImage = 'url(sheets/sheet' + sheetId + '/artwork.png)';
