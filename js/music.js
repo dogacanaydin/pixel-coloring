@@ -3,7 +3,7 @@
 (function () {
   var audio = new Audio('assets/Assets_Scenes_Home_Sounds_background_audio_home_bg_main_master.mp3');
   audio.loop = true;
-  audio.volume = 0.5;
+  audio.volume = 0.25;
 
   function startMusic() {
     audio.play().then(function () {
