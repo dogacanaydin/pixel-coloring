@@ -230,10 +230,9 @@
         fillCell(target, cr, cc);
       }
     }
-    // Fill orphans: unfilled cells of the selected color whose same-color
-    // neighbors are all filled, so no isolated single pixels remain
+    // Fill nearby orphans: check neighbors of painted 2x2 area only
     if (painted) {
-      fillOrphans(selectedColor);
+      fillNearbyOrphans(selectedColor, r0, c0);
       SFX.fillCell();
     }
     if (!painted && !filledCells[row][col]) {
@@ -249,21 +248,25 @@
     }
   }
 
-  function fillOrphans(colorIdx) {
-    // An orphan is an unfilled cell of colorIdx where all adjacent
-    // (up/down/left/right) cells of the same color are already filled.
-    // Repeat until no more orphans found (filling one can create another).
+  function fillNearbyOrphans(colorIdx, brushR, brushC) {
+    // Only check cells within 2 rows/cols of the 2x2 brush area
+    var minR = Math.max(0, brushR - 1);
+    var maxR = Math.min(gridSize - 1, brushR + 2);
+    var minC = Math.max(0, brushC - 1);
+    var maxC = Math.min(gridSize - 1, brushC + 2);
+    var dirs = [[-1,0],[1,0],[0,-1],[0,1]];
+
+    // Repeat in case filling one orphan creates another nearby
     var found = true;
     while (found) {
       found = false;
-      for (var r = 0; r < gridSize; r++) {
-        for (var c = 0; c < gridSize; c++) {
+      for (var r = minR; r <= maxR; r++) {
+        for (var c = minC; c <= maxC; c++) {
           if (filledCells[r][c]) continue;
           if (colorGrid[r][c] !== colorIdx) continue;
 
-          // Check if all same-color neighbors are filled
+          // Orphan: all same-color neighbors are already filled
           var isolated = true;
-          var dirs = [[-1,0],[1,0],[0,-1],[0,1]];
           for (var d = 0; d < dirs.length; d++) {
             var nr = r + dirs[d][0], nc = c + dirs[d][1];
             if (nr < 0 || nr >= gridSize || nc < 0 || nc >= gridSize) continue;
