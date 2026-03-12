@@ -58,10 +58,11 @@ body {
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: x mandatory;
   padding: 0 24px;
-  max-width: 100%;
+  width: 100%;
   /* Hide scrollbar but allow scrolling */
   scrollbar-width: none;
   -ms-overflow-style: none;
+  touch-action: pan-x;
 }
 
 .sheet-grid::-webkit-scrollbar {
