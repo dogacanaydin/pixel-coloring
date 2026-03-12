@@ -230,7 +230,10 @@
         fillCell(target, cr, cc);
       }
     }
+    // Fill orphans: unfilled cells of the selected color whose same-color
+    // neighbors are all filled, so no isolated single pixels remain
     if (painted) {
+      fillOrphans(selectedColor);
       SFX.fillCell();
     }
     if (!painted && !filledCells[row][col]) {
@@ -243,6 +246,42 @@
       }
     } else {
       lastWrongKey = null;
+    }
+  }
+
+  function fillOrphans(colorIdx) {
+    // An orphan is an unfilled cell of colorIdx where all adjacent
+    // (up/down/left/right) cells of the same color are already filled.
+    // Repeat until no more orphans found (filling one can create another).
+    var found = true;
+    while (found) {
+      found = false;
+      for (var r = 0; r < gridSize; r++) {
+        for (var c = 0; c < gridSize; c++) {
+          if (filledCells[r][c]) continue;
+          if (colorGrid[r][c] !== colorIdx) continue;
+
+          // Check if all same-color neighbors are filled
+          var isolated = true;
+          var dirs = [[-1,0],[1,0],[0,-1],[0,1]];
+          for (var d = 0; d < dirs.length; d++) {
+            var nr = r + dirs[d][0], nc = c + dirs[d][1];
+            if (nr < 0 || nr >= gridSize || nc < 0 || nc >= gridSize) continue;
+            if (colorGrid[nr][nc] === colorIdx && !filledCells[nr][nc]) {
+              isolated = false;
+              break;
+            }
+          }
+
+          if (isolated) {
+            var orphanEl = getCell(r, c);
+            if (orphanEl) {
+              fillCell(orphanEl, r, c);
+              found = true;
+            }
+          }
+        }
+      }
     }
   }
 
