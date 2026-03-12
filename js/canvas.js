@@ -94,19 +94,39 @@
     palettePanel.appendChild(slot);
   }
 
-  // Dismiss loading overlay and slide in panel
+  // Wait for user tap to unlock audio and start
   var overlay = document.getElementById('loading-overlay');
-  if (overlay) overlay.classList.add('hidden');
-  setTimeout(function () {
-    palettePanel.classList.add('visible');
-    SFX.panelSlideIn();
-  }, 50);
 
-  // Auto-select first non-background color
-  selectColor(firstColorIdx);
+  function startGame() {
+    // Unlock audio context
+    AudioCtx.get();
 
-  // Update progress display
-  updateProgress();
+    // Dismiss overlay
+    if (overlay) {
+      overlay.classList.add('hidden');
+      overlay.removeEventListener('touchstart', startGame);
+      overlay.removeEventListener('click', startGame);
+    }
+
+    // Slide in panel
+    setTimeout(function () {
+      palettePanel.classList.add('visible');
+      SFX.panelSlideIn();
+    }, 50);
+
+    // Auto-select first non-background color
+    selectColor(firstColorIdx);
+
+    // Update progress display
+    updateProgress();
+  }
+
+  if (overlay) {
+    overlay.addEventListener('touchstart', startGame, { passive: true, once: true });
+    overlay.addEventListener('click', startGame, { once: true });
+  } else {
+    startGame();
+  }
 
   // Back button
   backBtn.addEventListener('click', function () {
