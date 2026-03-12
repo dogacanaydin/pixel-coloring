@@ -250,10 +250,10 @@
 
   function fillNearbyOrphans(colorIdx, brushR, brushC) {
     // Only check cells within 2 rows/cols of the 2x2 brush area
-    var minR = Math.max(0, brushR - 1);
-    var maxR = Math.min(gridSize - 1, brushR + 2);
-    var minC = Math.max(0, brushC - 1);
-    var maxC = Math.min(gridSize - 1, brushC + 2);
+    var minR = Math.max(0, brushR - 2);
+    var maxR = Math.min(gridSize - 1, brushR + 3);
+    var minC = Math.max(0, brushC - 2);
+    var maxC = Math.min(gridSize - 1, brushC + 3);
     var dirs = [[-1,0],[1,0],[0,-1],[0,1]];
 
     // Repeat in case filling one orphan creates another nearby
