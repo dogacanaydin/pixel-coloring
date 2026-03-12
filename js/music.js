@@ -5,18 +5,17 @@
   audio.loop = true;
   audio.volume = 0.5;
 
-  var started = false;
-
   function startMusic() {
-    if (started) return;
-    started = true;
-    audio.play().catch(function () {
-      // Autoplay blocked — retry on next interaction
-      started = false;
+    audio.play().then(function () {
+      // Success — remove listeners
+      document.removeEventListener('touchstart', startMusic);
+      document.removeEventListener('click', startMusic);
+    }).catch(function () {
+      // Autoplay blocked — keep listeners for next interaction
     });
   }
 
-  // iOS Safari requires user gesture to play audio
-  document.addEventListener('touchstart', startMusic, { once: false });
-  document.addEventListener('click', startMusic, { once: false });
+  // passive: true so we never interfere with scrolling
+  document.addEventListener('touchstart', startMusic, { passive: true });
+  document.addEventListener('click', startMusic, { passive: true });
 })();
