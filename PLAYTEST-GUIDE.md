@@ -88,6 +88,7 @@ The app has background music and sound effects:
 - **Coloring screen** has different background music plus tap sounds
 - A rising musical tone plays when filling pixels — it gets higher with rapid taps!
 - A cheerful melody plays when you finish a color, and a celebration fanfare when you complete the whole sheet
+- **First tap requirement:** Due to iOS restrictions, sound will not play until the user taps the screen for the first time. This is why the coloring screen shows a "Tap to start!" prompt — it ensures sound is unlocked before the game begins.
 - Sound plays through the device speaker — make sure the device is **not on silent mode**
 - If you don't hear sound, check that the **volume is turned up** and the **mute switch** (on the side of the device) is off
 
