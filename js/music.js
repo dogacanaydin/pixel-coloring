@@ -3,10 +3,10 @@
 var Music = (function () {
   var audio = null;
 
-  function init(src) {
+  function init(src, volume) {
     audio = new Audio(src);
     audio.loop = true;
-    audio.volume = 0.2;
+    audio.volume = volume || 0.15;
 
     function startMusic() {
       audio.play().then(function () {
