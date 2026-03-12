@@ -1,35 +1,46 @@
-/* js/music.js — Background music via Web Audio API GainNode (works on iOS) */
+/* js/music.js — Background music via Web Audio API decodeAudioData (reliable on iOS) */
 
 var Music = (function () {
   function init(src, volume) {
     var vol = volume || 0.15;
-    var ctx = null;
-    var gainNode = null;
-    var source = null;
-    var audio = new Audio(src);
-    audio.loop = true;
-    audio.volume = 1; // iOS ignores this, but set it anyway
+    var started = false;
 
     function startMusic() {
-      if (ctx) return; // already started
-      ctx = new (window.AudioContext || window.webkitAudioContext)();
-      gainNode = ctx.createGain();
-      gainNode.gain.value = vol;
-      source = ctx.createMediaElementSource(audio);
-      source.connect(gainNode);
-      gainNode.connect(ctx.destination);
+      if (started) return;
+      started = true;
 
-      if (ctx.state === 'suspended') {
-        ctx.resume();
-      }
+      var ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if (ctx.state === 'suspended') ctx.resume();
 
-      audio.play().then(function () {
-        document.removeEventListener('touchstart', startMusic);
-        document.removeEventListener('click', startMusic);
-      }).catch(function () {
-        // Reset so next interaction retries
-        ctx = null;
-      });
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', src, true);
+      xhr.responseType = 'arraybuffer';
+      xhr.onload = function () {
+        ctx.decodeAudioData(xhr.response, function (buffer) {
+          var gainNode = ctx.createGain();
+          gainNode.gain.value = vol;
+          gainNode.connect(ctx.destination);
+
+          function playLoop() {
+            var source = ctx.createBufferSource();
+            source.buffer = buffer;
+            source.connect(gainNode);
+            source.onended = playLoop;
+            source.start(0);
+          }
+          playLoop();
+
+          document.removeEventListener('touchstart', startMusic);
+          document.removeEventListener('click', startMusic);
+        }, function () {
+          // Decode failed — allow retry
+          started = false;
+        });
+      };
+      xhr.onerror = function () {
+        started = false;
+      };
+      xhr.send();
     }
 
     document.addEventListener('touchstart', startMusic, { passive: true });
