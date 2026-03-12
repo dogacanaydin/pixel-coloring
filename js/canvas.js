@@ -94,19 +94,17 @@
     palettePanel.appendChild(slot);
   }
 
-  // Wait for user tap to unlock audio and start
+  // Show loading spinner for 3 seconds then start
   var overlay = document.getElementById('loading-overlay');
 
   function startGame() {
-    // Unlock audio context
-    AudioCtx.get();
-
     // Dismiss overlay
     if (overlay) {
       overlay.classList.add('hidden');
-      overlay.removeEventListener('touchstart', startGame);
-      overlay.removeEventListener('click', startGame);
     }
+
+    // Unlock audio context
+    AudioCtx.get();
 
     // Slide in panel
     setTimeout(function () {
@@ -121,12 +119,7 @@
     updateProgress();
   }
 
-  if (overlay) {
-    overlay.addEventListener('touchstart', startGame, { passive: true, once: true });
-    overlay.addEventListener('click', startGame, { once: true });
-  } else {
-    startGame();
-  }
+  setTimeout(startGame, 3000);
 
   // Back button
   backBtn.addEventListener('click', function () {
