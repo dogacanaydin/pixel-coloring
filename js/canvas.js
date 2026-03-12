@@ -61,14 +61,25 @@
     }
   }
 
-  // Build palette
-  for (var i = 0; i < palette.length; i++) {
+  // Pre-fill background cells (palette index 0) — skip from coloring
+  var bgCells = pixelGrid.querySelectorAll('.grid-cell[data-correct="0"]');
+  for (var b = 0; b < bgCells.length; b++) {
+    var br = parseInt(bgCells[b].dataset.row);
+    var bc = parseInt(bgCells[b].dataset.col);
+    filledCells[br][bc] = true;
+    bgCells[b].style.backgroundColor = palette[0];
+    bgCells[b].classList.add('cell--filled');
+    filledCount++;
+  }
+
+  // Build palette (skip index 0 — background)
+  for (var i = 1; i < palette.length; i++) {
     var slot = document.createElement('div');
-    slot.className = 'swatch-slot' + (i === 0 ? ' swatch-slot--selected' : '');
+    slot.className = 'swatch-slot' + (i === 1 ? ' swatch-slot--selected' : '');
     slot.dataset.idx = i;
 
     var swatch = document.createElement('div');
-    swatch.className = 'swatch' + (i === 0 ? ' swatch--selected' : '');
+    swatch.className = 'swatch' + (i === 1 ? ' swatch--selected' : '');
     swatch.dataset.idx = i;
     swatch.style.backgroundColor = palette[i];
     swatch.addEventListener('click', (function (idx) {
@@ -85,8 +96,8 @@
     SFX.panelSlideIn();
   }, 50);
 
-  // Auto-select first color
-  selectColor(0);
+  // Auto-select first non-background color
+  selectColor(1);
 
   // Update progress display
   updateProgress();
@@ -172,9 +183,6 @@
     }
   }
 
-  // Phone detection — 2x2 brush for younger kids
-  var isPhone = window.innerWidth <= 767;
-
   function getCell(row, col) {
     if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) return null;
     return pixelGrid.querySelector('.grid-cell[data-row="' + row + '"][data-col="' + col + '"]');
@@ -187,47 +195,32 @@
     var row = parseInt(el.dataset.row);
     var col = parseInt(el.dataset.col);
 
-    if (isPhone) {
-      // 2x2 brush: tapped cell as top-left, shift if at edge
-      var r0 = Math.min(row, gridSize - 2);
-      var c0 = Math.min(col, gridSize - 2);
-      var painted = false;
-      var coords = [[r0,c0],[r0,c0+1],[r0+1,c0],[r0+1,c0+1]];
-      for (var i = 0; i < coords.length; i++) {
-        var cr = coords[i][0], cc = coords[i][1];
-        if (filledCells[cr][cc]) continue;
-        var target = getCell(cr, cc);
-        if (!target) continue;
-        var idx = parseInt(target.dataset.correct);
-        if (selectedColor === idx) {
-          painted = true;
-          fillCell(target, cr, cc);
-        }
+    // 2x2 brush: tapped cell as top-left, shift if at edge
+    var r0 = Math.min(row, gridSize - 2);
+    var c0 = Math.min(col, gridSize - 2);
+    var painted = false;
+    var coords = [[r0,c0],[r0,c0+1],[r0+1,c0],[r0+1,c0+1]];
+    for (var i = 0; i < coords.length; i++) {
+      var cr = coords[i][0], cc = coords[i][1];
+      if (filledCells[cr][cc]) continue;
+      var target = getCell(cr, cc);
+      if (!target) continue;
+      var idx = parseInt(target.dataset.correct);
+      if (selectedColor === idx) {
+        painted = true;
+        fillCell(target, cr, cc);
       }
-      if (!painted && !filledCells[row][col]) {
-        var correctIdx = parseInt(el.dataset.correct);
-        var cellKey = row + ',' + col;
-        if (selectedColor !== correctIdx && cellKey !== lastWrongKey) {
-          lastWrongKey = cellKey;
-          showWrongFeedback(el);
-          SFX.wrongCell();
-        }
-      } else {
-        lastWrongKey = null;
-      }
-    } else {
-      // Desktop/tablet: single cell
-      if (filledCells[row][col]) return;
+    }
+    if (!painted && !filledCells[row][col]) {
       var correctIdx = parseInt(el.dataset.correct);
       var cellKey = row + ',' + col;
-      if (selectedColor === correctIdx) {
-        lastWrongKey = null;
-        fillCell(el, row, col);
-      } else if (cellKey !== lastWrongKey) {
+      if (selectedColor !== correctIdx && cellKey !== lastWrongKey) {
         lastWrongKey = cellKey;
         showWrongFeedback(el);
         SFX.wrongCell();
       }
+    } else {
+      lastWrongKey = null;
     }
   }
 
