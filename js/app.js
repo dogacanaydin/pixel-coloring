@@ -68,6 +68,14 @@
     }, 5000);
   }
 
+  // Convert vertical mouse wheel to horizontal scroll on desktop
+  sheetGrid.addEventListener('wheel', function (e) {
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      e.preventDefault();
+      sheetGrid.scrollLeft += e.deltaY;
+    }
+  }, { passive: false });
+
   // Check fullscreen support — show banner hint if not available
   if (!document.documentElement.requestFullscreen && !document.documentElement.webkitRequestFullscreen) {
     showFullscreenBanner();
