@@ -296,6 +296,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   padding: 0;
   transform: translateX(100%);
   transition: transform 400ms ease-out;

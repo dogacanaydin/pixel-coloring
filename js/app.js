@@ -69,12 +69,37 @@
   }
 
   // Convert vertical mouse wheel to horizontal scroll on desktop
-  sheetGrid.addEventListener('wheel', function (e) {
+  document.addEventListener('wheel', function (e) {
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
       e.preventDefault();
       sheetGrid.scrollLeft += e.deltaY;
     }
   }, { passive: false });
+
+  // Click-drag scroll for desktop
+  var dragScrolling = false;
+  var dragStartX = 0;
+  var dragScrollLeft = 0;
+
+  sheetGrid.addEventListener('mousedown', function (e) {
+    // Don't interfere with card clicks — only start drag on the grid itself
+    dragScrolling = true;
+    dragStartX = e.pageX;
+    dragScrollLeft = sheetGrid.scrollLeft;
+    sheetGrid.style.cursor = 'grabbing';
+  });
+
+  document.addEventListener('mousemove', function (e) {
+    if (!dragScrolling) return;
+    e.preventDefault();
+    var dx = e.pageX - dragStartX;
+    sheetGrid.scrollLeft = dragScrollLeft - dx;
+  });
+
+  document.addEventListener('mouseup', function () {
+    dragScrolling = false;
+    sheetGrid.style.cursor = '';
+  });
 
   // Check fullscreen support — show banner hint if not available
   if (!document.documentElement.requestFullscreen && !document.documentElement.webkitRequestFullscreen) {
