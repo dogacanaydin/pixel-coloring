@@ -217,23 +217,27 @@
     // 2x2 brush: tapped cell as top-left, shift if at edge
     var r0 = Math.min(row, gridSize - 2);
     var c0 = Math.min(col, gridSize - 2);
+    // Only paint if tapped cell itself matches selected color
+    var tappedCorrect = !filledCells[row][col] && colorGrid[row][col] === selectedColor;
     var painted = false;
-    var coords = [[r0,c0],[r0,c0+1],[r0+1,c0],[r0+1,c0+1]];
-    for (var i = 0; i < coords.length; i++) {
-      var cr = coords[i][0], cc = coords[i][1];
-      if (filledCells[cr][cc]) continue;
-      var target = getCell(cr, cc);
-      if (!target) continue;
-      var idx = parseInt(target.dataset.correct);
-      if (selectedColor === idx) {
-        painted = true;
-        fillCell(target, cr, cc);
+
+    if (tappedCorrect) {
+      var coords = [[r0,c0],[r0,c0+1],[r0+1,c0],[r0+1,c0+1]];
+      for (var i = 0; i < coords.length; i++) {
+        var cr = coords[i][0], cc = coords[i][1];
+        if (filledCells[cr][cc]) continue;
+        var target = getCell(cr, cc);
+        if (!target) continue;
+        var idx = parseInt(target.dataset.correct);
+        if (selectedColor === idx) {
+          painted = true;
+          fillCell(target, cr, cc);
+        }
       }
-    }
-    // Fill nearby orphans: check neighbors of painted 2x2 area only
-    if (painted) {
-      fillNearbyOrphans(selectedColor, r0, c0);
-      SFX.fillCell();
+      if (painted) {
+        fillNearbyOrphans(selectedColor, r0, c0);
+        SFX.fillCell();
+      }
     }
     if (!painted && !filledCells[row][col]) {
       var correctIdx = parseInt(el.dataset.correct);
