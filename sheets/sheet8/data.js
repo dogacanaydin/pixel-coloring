@@ -1,5 +1,5 @@
 window.SHEET_DATA_8 = {
-  title: "Brown Girl",
+  title: "Gabby",
   gridSize: 20,
   palette: ["#000000", "#DDD4E8", "#EF7CBC", "#5F1F1E", "#D88252", "#BC704A", "#EFEFFE", "#D86D55", "#C43D6E", "#FBE7C0"],
   colorGrid: [

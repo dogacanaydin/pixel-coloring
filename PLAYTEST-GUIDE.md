@@ -40,7 +40,7 @@ Adding to the home screen makes the app run in fullscreen (no browser bars) and 
 | Bear Cub | 20x20 | Hard |
 | Pink Princess | 20x20 | Hard |
 | Sunshine Kid | 20x20 | Hard |
-| Brown Girl | 20x20 | Hard |
+| Gabby | 20x20 | Hard |
 | Neon Creature | 20x20 | Hard |
 | Diamond Gem | 20x20 | Hard |
 | Space Invaders | 16x16 | Medium |
