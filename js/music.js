@@ -1,21 +1,24 @@
-/* js/music.js — Background music, starts on first user interaction */
+/* js/music.js — Background music, page-specific, starts on first user interaction */
 
-(function () {
-  var audio = new Audio('assets/Assets_Scenes_Home_Sounds_background_audio_home_bg_main_master.mp3');
-  audio.loop = true;
-  audio.volume = 0.25;
+var Music = (function () {
+  var audio = null;
 
-  function startMusic() {
-    audio.play().then(function () {
-      // Success — remove listeners
-      document.removeEventListener('touchstart', startMusic);
-      document.removeEventListener('click', startMusic);
-    }).catch(function () {
-      // Autoplay blocked — keep listeners for next interaction
-    });
+  function init(src) {
+    audio = new Audio(src);
+    audio.loop = true;
+    audio.volume = 0.2;
+
+    function startMusic() {
+      audio.play().then(function () {
+        document.removeEventListener('touchstart', startMusic);
+        document.removeEventListener('click', startMusic);
+      }).catch(function () {});
+    }
+
+    // passive: true so we never interfere with scrolling
+    document.addEventListener('touchstart', startMusic, { passive: true });
+    document.addEventListener('click', startMusic, { passive: true });
   }
 
-  // passive: true so we never interfere with scrolling
-  document.addEventListener('touchstart', startMusic, { passive: true });
-  document.addEventListener('click', startMusic, { passive: true });
+  return { init: init };
 })();
