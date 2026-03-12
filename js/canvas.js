@@ -14,6 +14,7 @@
   var palette = sheetData.palette;
   var colorGrid = sheetData.colorGrid;
   var title = sheetData.title || 'Sheet ' + sheetId;
+  var bgIndex = sheetData.bgIndex !== undefined ? sheetData.bgIndex : 0;
 
   var totalCells = gridSize * gridSize;
   var filledCount = 0;
@@ -61,25 +62,28 @@
     }
   }
 
-  // Pre-fill background cells (palette index 0) — skip from coloring
-  var bgCells = pixelGrid.querySelectorAll('.grid-cell[data-correct="0"]');
+  // Pre-fill background cells — skip from coloring
+  var bgCells = pixelGrid.querySelectorAll('.grid-cell[data-correct="' + bgIndex + '"]');
   for (var b = 0; b < bgCells.length; b++) {
     var br = parseInt(bgCells[b].dataset.row);
     var bc = parseInt(bgCells[b].dataset.col);
     filledCells[br][bc] = true;
-    bgCells[b].style.backgroundColor = palette[0];
+    bgCells[b].style.backgroundColor = palette[bgIndex];
     bgCells[b].classList.add('cell--filled');
     filledCount++;
   }
 
-  // Build palette (skip index 0 — background)
-  for (var i = 1; i < palette.length; i++) {
+  // Build palette (skip background index)
+  var firstColorIdx = -1;
+  for (var i = 0; i < palette.length; i++) {
+    if (i === bgIndex) continue;
+    if (firstColorIdx === -1) firstColorIdx = i;
     var slot = document.createElement('div');
-    slot.className = 'swatch-slot' + (i === 1 ? ' swatch-slot--selected' : '');
+    slot.className = 'swatch-slot' + (i === firstColorIdx ? ' swatch-slot--selected' : '');
     slot.dataset.idx = i;
 
     var swatch = document.createElement('div');
-    swatch.className = 'swatch' + (i === 1 ? ' swatch--selected' : '');
+    swatch.className = 'swatch' + (i === firstColorIdx ? ' swatch--selected' : '');
     swatch.dataset.idx = i;
     swatch.style.backgroundColor = palette[i];
     swatch.addEventListener('click', (function (idx) {
@@ -97,7 +101,7 @@
   }, 50);
 
   // Auto-select first non-background color
-  selectColor(1);
+  selectColor(firstColorIdx);
 
   // Update progress display
   updateProgress();

@@ -1,6 +1,7 @@
 window.SHEET_DATA_1 = {
   title: "Rubble",
   gridSize: 20,
+  bgIndex: 5,
   palette: ["#FFC700", "#E5A04D", "#F7A08B", "#F9E3C2", "#B6B8BA", "#1A1A1A", "#FFFFFF"],
   colorGrid: [
     [5,5,5,5,5,5,5,0,0,0,0,0,0,5,5,5,5,5,5,5],
