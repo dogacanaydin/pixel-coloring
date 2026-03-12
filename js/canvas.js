@@ -94,7 +94,9 @@
     palettePanel.appendChild(slot);
   }
 
-  // Slide in panel
+  // Dismiss loading overlay and slide in panel
+  var overlay = document.getElementById('loading-overlay');
+  if (overlay) overlay.classList.add('hidden');
   setTimeout(function () {
     palettePanel.classList.add('visible');
     SFX.panelSlideIn();

@@ -276,6 +276,36 @@ body {
   100% { transform: translateX(0);    outline: 3px solid transparent; outline-offset: -3px; }
 }
 
+/* Loading overlay */
+#loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: #B8DEF5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease;
+}
+
+#loading-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 5px solid rgba(42, 82, 152, 0.2);
+  border-top-color: #2a5298;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 /* Completion: cells merge into artwork */
 #pixel-grid.grid--complete {
   transform: scale(1.02);
