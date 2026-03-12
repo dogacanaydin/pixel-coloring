@@ -1,16 +1,9 @@
-/* js/sounds.js — Procedural sound effects via Web Audio API */
+/* js/sounds.js — Procedural sound effects via shared AudioContext */
 
 var SFX = (function () {
-  var ctx = null;
 
   function getCtx() {
-    if (!ctx) {
-      ctx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    if (ctx.state === 'suspended') {
-      ctx.resume();
-    }
-    return ctx;
+    return AudioCtx.get();
   }
 
   // Rising pitch pop — satisfying cell fill

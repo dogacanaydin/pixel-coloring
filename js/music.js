@@ -1,4 +1,4 @@
-/* js/music.js — Background music via Web Audio API decodeAudioData (reliable on iOS) */
+/* js/music.js — Background music through shared AudioContext */
 
 var Music = (function () {
   function init(src, volume) {
@@ -9,38 +9,23 @@ var Music = (function () {
       if (started) return;
       started = true;
 
-      var ctx = new (window.AudioContext || window.webkitAudioContext)();
-      if (ctx.state === 'suspended') ctx.resume();
+      var ctx = AudioCtx.get();
+      var audio = new Audio(src);
+      audio.loop = true;
+      audio.crossOrigin = 'anonymous';
 
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', src, true);
-      xhr.responseType = 'arraybuffer';
-      xhr.onload = function () {
-        ctx.decodeAudioData(xhr.response, function (buffer) {
-          var gainNode = ctx.createGain();
-          gainNode.gain.value = vol;
-          gainNode.connect(ctx.destination);
+      var source = ctx.createMediaElementSource(audio);
+      var gainNode = ctx.createGain();
+      gainNode.gain.value = vol;
+      source.connect(gainNode);
+      gainNode.connect(ctx.destination);
 
-          function playLoop() {
-            var source = ctx.createBufferSource();
-            source.buffer = buffer;
-            source.connect(gainNode);
-            source.onended = playLoop;
-            source.start(0);
-          }
-          playLoop();
-
-          document.removeEventListener('touchstart', startMusic);
-          document.removeEventListener('click', startMusic);
-        }, function () {
-          // Decode failed — allow retry
-          started = false;
-        });
-      };
-      xhr.onerror = function () {
+      audio.play().then(function () {
+        document.removeEventListener('touchstart', startMusic);
+        document.removeEventListener('click', startMusic);
+      }).catch(function () {
         started = false;
-      };
-      xhr.send();
+      });
     }
 
     document.addEventListener('touchstart', startMusic, { passive: true });
