@@ -211,6 +211,9 @@
         fillCell(target, cr, cc);
       }
     }
+    if (painted) {
+      SFX.fillCell();
+    }
     if (!painted && !filledCells[row][col]) {
       var correctIdx = parseInt(el.dataset.correct);
       var cellKey = row + ',' + col;
@@ -230,7 +233,6 @@
     el.style.backgroundColor = palette[correctIdx];
     el.classList.add('cell--filled');
     el.classList.remove('cell--highlighted');
-    SFX.fillCell();
 
     filledCount++;
     updateProgress();
